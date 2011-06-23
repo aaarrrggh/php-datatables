@@ -74,15 +74,7 @@ abstract class DataTable_DataTable
    */
   abstract public function getTableId();
   
-  /**
-   * Load data for an AJAX request
-   * 
-   * This method must return a DataTable_DataResult object
-   * 
-   * @param DataTable_ServerParameterHolder $parameters
-   * @return DataTable_DataResult
-   */
-  abstract protected function loadData(DataTable_Request $request);
+
 
   /**
    * Override this method to return the javascript function that
@@ -167,7 +159,7 @@ abstract class DataTable_DataTable
     }
 
     $this->request = $request;
-    $dataTableDataResult = $this->loadData($request);
+    $dataTableDataResult = $this->config->loadData($request);
     return $this->renderReturnData($dataTableDataResult);
   }
 
@@ -324,7 +316,7 @@ abstract class DataTable_DataTable
     $request->setSortDirection($sortDirection);
 
     // load data
-    $dataResult = $this->loadData($request);
+    $dataResult = $this->config->loadData($request);
 
     // just return the entity array
     return $dataResult->getData();

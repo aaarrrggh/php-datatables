@@ -78,7 +78,22 @@ class DataTable_Config
    * @var integer
    */
   protected $staticMaxLength        = 100;
-
+  
+  protected $dataSource = null;
+  
+  public function setDataSource(DataTable_DataSource $dataSource){
+  	$this->dataSource = $dataSource;
+  }
+  
+  public function getDataSource(){
+  	return $this->dataSource;
+  }
+  
+  final public function loadData(DataTable_Request $request){
+  	return $this->dataSource->loadData($request);
+  }
+  
+  
   public function __construct()
   {
     $this->columns = new DataTable_ColumnCollection();
