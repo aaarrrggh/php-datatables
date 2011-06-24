@@ -687,24 +687,6 @@ abstract class DataTable_DataTable
     return $this->columnIndexNameCache[$name];
   }
 
-  /**
-   * Utility method to get all the column names 
-   * that are configured as being searchable
-   * 
-   * @return array
-   */
-  protected function getSearchableColumnNames()
-  {
-    $cols = array();
-    
-    foreach($this->config->getColumns() as $column){
-      if($column->isSearchable()){
-        $cols[] = $column->getName();
-      }
-    }
-    
-    return $cols;
-  }
   
   /**
    * Build an array of Column->name => position index

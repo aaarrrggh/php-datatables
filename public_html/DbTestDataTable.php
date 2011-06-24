@@ -12,6 +12,7 @@ class DbTestDataTable extends DataTable_DataTable{
             ->setGetMethod("getUsername")
             ->setSortKey("username")
             ->setIsSortable(true)
+            ->setIsSearchable(true)
             ->setIsDefaultSort(true);
          
     $column2 = new DataTable_Column();
@@ -20,7 +21,7 @@ class DbTestDataTable extends DataTable_DataTable{
             ->setGetMethod("getFirstName")
             ->setSortKey("first_name")
             ->setIsSortable(true)
-            ->setIsDefaultSort(true);
+            ->setIsDefaultSort(false);
     
     $column3 = new DataTable_Column();
     $column3->setName("last_name")
@@ -28,74 +29,14 @@ class DbTestDataTable extends DataTable_DataTable{
             ->setGetMethod("getLastName")
             ->setSortKey("last_name")
             ->setIsSortable(true)
-            ->setIsDefaultSort(true);
-
-	/*
-		// create first column
-    $column1 = new DataTable_Column();
-    $column1->setName("renderingEngine")
-            ->setTitle("Rendering Engine")
-            ->setGetMethod("getRenderingEngine")
-            ->setSortKey("renderingEngine")
-            ->setIsSortable(true)
-            ->setIsDefaultSort(true);
-
-    // create second column
-    $column2 = new DataTable_Column();
-    $column2->setName("browser")
-            ->setTitle("Browser")
-            ->setGetMethod("getBrowser")
-            ->setSortKey("browser")
-            ->setIsSortable(true)
-            ->setIsSearchable(true);
-
-    // create third column
-    $column3 = new DataTable_Column();
-    $column3->setName("platform")
-            ->setTitle("Platform(s)")
-            ->setGetMethod("getPlatform")
-            ->setSortKey("platform")
-            ->setIsSortable(true)
+            ->setIsSearchable(true)
             ->setIsDefaultSort(false);
-
-    // create fourth column
-    $column4 = new DataTable_Column();
-    $column4->setName("engineVersion")
-            ->setTitle("Engine Version")
-            ->setGetMethod("getEngineVersion")
-            ->setSortKey("engineVersion")
-            ->setIsSortable(true)
-            ->setIsDefaultSort(false);
+	
     
-    // create fifth column
-    $column5 = new DataTable_Column();
-    $column5->setName("cssGrade")
-            ->setTitle("CSS Grade")
-            ->setGetMethod("getCssGrade")
-            ->setSortKey("cssGrade")
-            ->setIsSortable(true)
-            ->setIsDefaultSort(false);
-
-    // create the actions column
-    $column6 = new DataTable_Column();
-    $column6->setName("actions")
-            ->setTitle("Actions")
-            ->setGetMethod("getActions"); //calls the getActions() method in this class
-    
-    // create an invisible column
-    $column7 = new DataTable_Column();
-    $column7->setName("invisible")
-            ->setTitle("Invisible")
-            ->setIsVisible(false)
-            ->setGetMethod("getInvisible");
-    */
     // create config
     $config = new DataTable_Config();
     
-    $dataSource = new DataTable_DataSourceMysqli(new mysqli('localhost', 'root', 'root', 'php-datatables'));
- 
-    
-    $config->setDataSource($dataSource);
+
     
     
     // add columns to collection
@@ -126,7 +67,9 @@ class DbTestDataTable extends DataTable_DataTable{
            ->setIsJQueryUIEnabled(false)
            ->setIsServerSideEnabled(true);
          
-
+    //create the data source
+    $dataSource = new DataTable_DataSourceMysqli($config, new mysqli('localhost', 'root', 'root', 'php-datatables'));
+    $config->setDataSource($dataSource);
     
      parent::__construct($config);
 		
