@@ -6,13 +6,15 @@ class User extends DataTable_DataEntity{
 	protected $_lastName = null;
 	protected $_username = null;
 	
-	
-	public function __construct($firstName, $lastName, $username){
-		$this->_firstName = $firstName;
-		$this->_lastName = $lastName;
-		$this->_username = $username;
+		
+	/* (non-PHPdoc)
+	 * @see DataTable_DataEntity::init()
+	 */
+	public function init() {
+		
+		
 	}
-	
+
 	public function getFirstName(){
 		return $this->_firstName;
 	}

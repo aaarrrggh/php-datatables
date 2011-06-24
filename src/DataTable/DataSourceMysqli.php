@@ -71,7 +71,8 @@ class DataTable_DataSourceMysqli extends DataTable_DataSource{
 	
 		$entities = array();
 		while ($row = $dat->fetch_assoc()){
-			$entities[] = new User($row['first_name'], $row['last_name'], $row['username']);
+			//$entities[] = new User($row['first_name'], $row['last_name'], $row['username']);
+			$entities[] = DataTable_DataEntityFactory::create('User', $row);
 		}
 		
 		return $entities;
