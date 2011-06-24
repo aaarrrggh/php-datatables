@@ -45,11 +45,22 @@ class DataTable_DataResult
 
   public function __construct($data, $numTotalResults, $numFilteredResults = null)
   {
+  	$this->checkDataIsArrayOfEntities($data);
+  	
     $this->data = $data;
     $this->numTotalResults = $numTotalResults;
     $this->numFilteredResults = $numFilteredResults;
   }
 
+  protected function checkDataIsArrayOfEntities(array $data){
+  	foreach ($data as $entity){
+  		if (!$entity instanceof DataTable_DataEntity){
+  			throw new DataTable_DataTableException('Must pass an array of DataTable_DataEntity objects to the DataResult constructor');
+  		}
+  	}
+  	
+  }
+  
   public function getData()
   {
     return $this->data;

@@ -17,17 +17,11 @@ class DataTable_DataSourceMysqli extends DataTable_DataSource{
 			throw new DataTable_DataTableException('You need to initialise the database via the setDatabaseConnection() method!');
 		}
 		
+	$results = $this->getResults($request);	
 		
-		
-		   // get fake data set
-   // $results = $this->loadFakeData('browsers.csv');
+	
 
-	$results = $this->getUsers();
-    
-    // search against object array if a search term was passed in
-    if(!is_null($request->getSearch())){
-      //$results = $this->search($results, $request->getSearch(), $this->getSearchableColumnNames());
-    }
+
 
     // get the count of the filtered results
     $filteredTotalLength = count($results);
@@ -45,13 +39,33 @@ class DataTable_DataSourceMysqli extends DataTable_DataSource{
 		
 	}
 	
-
+	private function getResults(DataTable_Request $request){
+		
+		$results = array();
+		
+		$results = $this->getUsers();
+	    
+	    // search against object array if a search term was passed in
+	    if(!is_null($request->getSearch())){
+	      //$results = $this->search($request->getSearch(), $this->getSearchableColumnNames());
+	    }
+	    
+	    return $results;
+	}
+	
+	private function search($searchParams, $searchableColumns){
+		var_dump($searchableColumns);
+		var_dump($searchParams);
+		die();
+	}
+	
+	
 	private function getUsers(){
 		$dat = $this->_db->query('SELECT * FROM users');
 		
 		$result = array();
 		while ($row = $dat->fetch_assoc()){
-			$result[] = new 
+			$result[] = new User($row['first_name'], $row['last_name'], $row['username']);
 		}
 		
 		

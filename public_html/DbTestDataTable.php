@@ -1,12 +1,36 @@
 <?php
-include('Browser.php');
+include('User.php');
 class DbTestDataTable extends DataTable_DataTable{
 	
 
 
 	public function __construct(DataTable_Config $config = null) {
 		
-		
+	$column1 = new DataTable_Column();
+    $column1->setName("username")
+            ->setTitle("Username")
+            ->setGetMethod("getUsername")
+            ->setSortKey("username")
+            ->setIsSortable(true)
+            ->setIsDefaultSort(true);
+         
+    $column2 = new DataTable_Column();
+    $column2->setName("first_name")
+            ->setTitle("First Name")
+            ->setGetMethod("getFirstName")
+            ->setSortKey("first_name")
+            ->setIsSortable(true)
+            ->setIsDefaultSort(true);
+    
+    $column3 = new DataTable_Column();
+    $column3->setName("last_name")
+            ->setTitle("Last Name")
+            ->setGetMethod("getLastName")
+            ->setSortKey("last_name")
+            ->setIsSortable(true)
+            ->setIsDefaultSort(true);
+
+	/*
 		// create first column
     $column1 = new DataTable_Column();
     $column1->setName("renderingEngine")
@@ -64,7 +88,7 @@ class DbTestDataTable extends DataTable_DataTable{
             ->setTitle("Invisible")
             ->setIsVisible(false)
             ->setGetMethod("getInvisible");
-    
+    */
     // create config
     $config = new DataTable_Config();
     
@@ -76,12 +100,8 @@ class DbTestDataTable extends DataTable_DataTable{
     
     // add columns to collection
     $config->getColumns()->add($column1)
-                         ->add($column2)
-                         ->add($column3)
-                         ->add($column4)
-                         ->add($column5)
-                         ->add($column6)
-                         ->add($column7);
+    					 ->add($column2)
+    					 ->add($column3);
      
     // build the language configuration
     $languageConfig = new DataTable_LanguageConfig();
@@ -119,6 +139,8 @@ class DbTestDataTable extends DataTable_DataTable{
 	
 	  protected function getRowCallbackFunction()
 	  {
+	  	return true;
+	  	
 	    return "
 	            function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 	
