@@ -3,12 +3,24 @@
 class DataTable_DataSourceMysqli extends DataTable_DataSource{
 	
 	protected $_db = null;
+	protected $_dbTableName = null;
 	
-	public function __construct(DataTable_Config $config, mysqli $dbConnection){
+	public function __construct(DataTable_Config $config, mysqli $dbConnection, $dbTableName){
 		$this->_db = $dbConnection;
 		$this->_config = $config;
+		$this->setDbTableName($dbTableName);
+		
 	}
 
+	protected function setDbTableName($dbTableName){
+		$dat = $this->_db->query('SHOW TABLES LIKE "'.mysqli_real_escape_string($this->_db, $dbTableName).'"');	
+		
+		if ($dat->num_rows <= 0){
+			throw new DataTable_DataTableException('Database table does not exist: '. $dbTableName);
+		}
+		
+		$this->_dbTableName = $dbTableName;
+	}
 	
 	public function loadData(DataTable_Request $request) {
 		
@@ -37,7 +49,7 @@ class DataTable_DataSourceMysqli extends DataTable_DataSource{
 	}
 
 	protected function getTotalNumberOfRecordsInDataSet() {
-		$dat = $this->_db->query('SELECT Count(id) as id FROM users');
+		$dat = $this->_db->query('SELECT Count(id) as id FROM '.$this->_dbTableName);
 		$result = $dat->fetch_assoc();
 		return $result['id'];
 	}
@@ -90,17 +102,20 @@ class DataTable_DataSourceMysqli extends DataTable_DataSource{
 		return $whereClause;
 	}
 	
-	
+	private function _getOrderByElementOfSqlQuery(DataTable_Request $request){
+		
+		return 'ORDER BY '.mysqli_real_escape_string($this->_db, $this->_config->getColumns()->get($request->getSortColumnIndex())->getSortKey()) .' '.$request->getSortDirection();
+	}
 	
 	private function _generateSqlQuery(DataTable_Request $request){
 		
 		
 		$whereClause = $this->_getSearchElementOfSqlQuery($request);
 		
+		$orderBy = $this->_getOrderByElementOfSqlQuery($request);
+		
 	
-		$query = 'SELECT * FROM users '.$whereClause.'
-					ORDER BY '.mysqli_real_escape_string($this->_db, $this->_config->getColumns()->get($request->getSortColumnIndex())->getSortKey()) .' '.$request->getSortDirection() .
-					' LIMIT '.$request->getDisplayStart().', '.$request->getDisplayLength();	
+		$query = 'SELECT * FROM '.$this->_dbTableName.' '.$whereClause.' '. $orderBy . '  LIMIT '.$request->getDisplayStart().', '.$request->getDisplayLength();	
 		
 	
 		

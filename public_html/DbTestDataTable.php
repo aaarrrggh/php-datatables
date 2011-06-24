@@ -68,7 +68,7 @@ class DbTestDataTable extends DataTable_DataTable{
            ->setIsServerSideEnabled(true);
          
     //create the data source
-    $dataSource = new DataTable_DataSourceMysqli($config, new mysqli('localhost', 'root', 'root', 'php-datatables'));
+    $dataSource = new DataTable_DataSourceMysqli($config, new mysqli('localhost', 'root', 'root', 'php-datatables'), 'users');
     $config->setDataSource($dataSource);
     
      parent::__construct($config);
