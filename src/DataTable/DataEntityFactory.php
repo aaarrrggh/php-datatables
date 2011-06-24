@@ -16,7 +16,7 @@ class DataTable_DataEntityFactory{
 			throw new DataTable_DataTableException('Must be an instance of DataTable_DataEntity');
 		}
 		
-		var_dump($obj);
+		return $obj;
 	}
 	
 }

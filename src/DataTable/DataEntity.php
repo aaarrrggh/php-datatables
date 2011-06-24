@@ -9,7 +9,7 @@ abstract class DataTable_DataEntity{
 	final public function __construct(array $mysqlResultRow){
 		
 		//TODO: intraspection of the class to match class properties to the mysql result
-		$this->init();
+		$this->init($mysqlResultRow); //only doing to test right now
 	}
 	
 	/**
@@ -17,6 +17,6 @@ abstract class DataTable_DataEntity{
 	 * This is a hook to allow people to still execute code when the object is first created
 	 * despite having locked down the constructor
 	 */
-	abstract public function init();
+	abstract public function init($mysqlResultRow); //remove $mysqlResultRow when doing this for real
 	
 }
