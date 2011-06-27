@@ -5,7 +5,6 @@ class User extends DataTable_DataEntity{
 	protected $_firstName = null;
 	protected $_lastName = null;
 	protected $_username = null;
-	
 
 	
 	/* (non-PHPdoc)

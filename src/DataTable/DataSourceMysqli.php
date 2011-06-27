@@ -3,23 +3,28 @@
 class DataTable_DataSourceMysqli extends DataTable_DataSource{
 	
 	protected $_db = null;
-	protected $_dbTableName = null;
+	protected $_databaseTablesToQuery = array();
+	protected $_whereClauseAdditions = array();
+	 
 	
-	public function __construct(DataTable_Config $config, mysqli $dbConnection, $dbTableName){
+	
+	public function __construct(DataTable_Config $config, mysqli $dbConnection, array $dbTableNames){
 		$this->_db = $dbConnection;
 		$this->_config = $config;
-		$this->setDbTableName($dbTableName);
+		
+		$this->setDbTableNames($dbTableNames);
 		
 	}
 
-	protected function setDbTableName($dbTableName){
-		$dat = $this->_db->query('SHOW TABLES LIKE "'.mysqli_real_escape_string($this->_db, $dbTableName).'"');	
+	protected function setDbTableNames($dbTableNames){
+			
+		$dat = $this->_db->query('SHOW TABLES LIKE "'.mysqli_real_escape_string($this->_db, implode(',', $dbTableNames)).'"');	
 		
-		if ($dat->num_rows <= 0){
-			throw new DataTable_DataTableException('Database table does not exist: '. $dbTableName);
+		if ($dat->num_rows !== count($dbTableNames)){
+			throw new DataTable_DataTableException('At least one database table does not exist: '. $dbTableNames);
 		}
 		
-		$this->_dbTableName = $dbTableName;
+		$this->_databaseTablesToQuery = $dbTableNames;
 	}
 	
 	public function loadData(DataTable_Request $request) {
@@ -33,21 +38,22 @@ class DataTable_DataSourceMysqli extends DataTable_DataSource{
 
 	$results = $this->getEntities($request);
 
-    return new DataTable_DataResult($results, $this->getTotalNumberOfRecordsInDataSet(), $this->getTotalNumberOfFilteredResults($request, $results)); //the pagination requires filtered		
+    return new DataTable_DataResult($results, $this->getTotalNumberOfRecordsInDataSet(), $this->getTotalNumberOfFilteredResults($request, $results)); //the pagination requires filtered
+		
 		
 	}
 	
 
-	/* (non-PHPdoc)
-	 * @see DataTable_DataSource::getResults()
-	 */
-	protected function getResults(DataTable_Request $request) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	protected function getTotalNumberOfRecordsInDataSet() {
-		$dat = $this->_db->query('SELECT Count(id) as id FROM '.$this->_dbTableName);
+		$query = 'SELECT Count(id) as id FROM '.mysqli_real_escape_string($this->_db, implode(',', $this->_databaseTablesToQuery));
+
+		if (count($this->_whereClauseAdditions) > 0){
+			$query .= ' WHERE '.implode('AND ', $this->_whereClauseAdditions);
+		}
+	
+		$dat = $this->_db->query($query);
+		
 		$result = $dat->fetch_assoc();
 		return $result['id'];
 	}
@@ -72,6 +78,8 @@ class DataTable_DataSourceMysqli extends DataTable_DataSource{
 		if (!is_null($request->getSearch()) && strlen($request->getSearch()) > 0){
 			$whereClause .= 'WHERE ';
 			
+			
+			
 			$x = 0;
 			foreach ($this->getSearchableColumnNames() as $columnName){
 				
@@ -83,8 +91,14 @@ class DataTable_DataSourceMysqli extends DataTable_DataSource{
 				
 				$x++;
 			}
+			$whereClause .= implode('AND ', $this->_whereClauseAdditions);
+		}else{
 			
+			$whereClause .= 'WHERE ';
+			$whereClause .= implode('AND ', $this->_whereClauseAdditions);
 		}
+		
+		
 				
 		return $whereClause;
 	}
@@ -102,12 +116,19 @@ class DataTable_DataSourceMysqli extends DataTable_DataSource{
 		$orderBy = $this->_getOrderByElementOfSqlQuery($request);
 		
 	
-		$query = 'SELECT * FROM '.$this->_dbTableName.' '.$whereClause.' '. $orderBy . '  LIMIT '.$request->getDisplayStart().', '.$request->getDisplayLength();	
-		
-	
+		$query = 'SELECT * FROM '.mysqli_real_escape_string($this->_db, implode(',', $this->_databaseTablesToQuery)).' '.$whereClause.' '. $orderBy . '  LIMIT '.$request->getDisplayStart().', '.$request->getDisplayLength();	
 		
 		return $query;
 	}
 
+	
+	
+	public function setDbTablesToQuery(array $dbTables){
+		$this->_databaseTablesToQuery = $dbTables;
+	}
+	
+	public function addWhereClause($whereClause){
+		$this->_whereClauseAdditions[] = $whereClause;
+	}
 	
 }
