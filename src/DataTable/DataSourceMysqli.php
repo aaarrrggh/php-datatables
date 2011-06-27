@@ -32,10 +32,8 @@ class DataTable_DataSourceMysqli extends DataTable_DataSource{
 	$results = array();
 
 	$results = $this->getEntities($request);
-	
-	
-    return new DataTable_DataResult($results, $this->getTotalNumberOfRecordsInDataSet(), $this->getTotalNumberOfFilteredResults($results));
-		
+
+    return new DataTable_DataResult($results, $this->getTotalNumberOfRecordsInDataSet(), $this->getTotalNumberOfFilteredResults($request, $results)); //the pagination requires filtered		
 		
 	}
 	
@@ -54,24 +52,12 @@ class DataTable_DataSourceMysqli extends DataTable_DataSource{
 		return $result['id'];
 	}
 
-	
-	
-	protected function search(DataTable_Request $request, $sortKey, $searchableColumns){
-	
-	/*	$searchTerm = $request->getSearch();
-		$query = 'SELECT '.implode(',', $this->getAllColumnNames()).' FROM users WHERE '
-		*/
-	}
-	
-
-	
 	protected function getEntities(DataTable_Request $request){
 		
 		$dat = $this->_db->query($this->_generateSqlQuery($request));
 	
 		$entities = array();
 		while ($row = $dat->fetch_assoc()){
-			//$entities[] = new User($row['first_name'], $row['last_name'], $row['username']);
 			$entities[] = DataTable_DataEntityFactory::create('User', $row);
 		}
 		

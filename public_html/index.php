@@ -29,7 +29,7 @@ $dbTest = new DbTestDataTable();
 // include the Demo DataTable class
 
 include('DbTestDataTable.php');
-
+//$table = new DemoDataTable();
 
 // instantiate the DataTable
 $table = new DbTestDataTable();

@@ -30,12 +30,17 @@ abstract class DataTable_DataSource{
 	 * Expects to receive an array of DataTable_DataEntity objects
 	 * @throws DataTable_DataTableException
 	 */
-	protected function getTotalNumberOfFilteredResults(array $entities){
+	protected function getTotalNumberOfFilteredResults(DataTable_Request $request, array $entities){
+		
+		if (!$request->getSearch()){
+			return null;
+		}
+		
 		foreach ($entities as $entity){
 			if (!$entity instanceof DataTable_DataEntity){
 				throw new DataTable_DataTableException('Not an entity type!');
 			}
-		}
+		}	
 		return count($entities);
 	}
 	
@@ -79,10 +84,7 @@ abstract class DataTable_DataSource{
     
     return $cols;
   }
-  
-  
-  abstract protected function search(DataTable_Request $request, $searchKey, $searchableColumns);
-  
+    
   protected function getSearchSortKey(DataTable_Request $request){
   	return $this->_config->getColumns()->get($request->getSortColumnIndex())->getSortKey();
   }

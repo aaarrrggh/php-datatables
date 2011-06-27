@@ -41,7 +41,7 @@ class DataTable_DataResult
    *
    * @var integer
    */
-  protected $numFilteredResults;
+  protected $numFilteredResults = null;
 
   public function __construct($data, $numTotalResults, $numFilteredResults = null)
   {
