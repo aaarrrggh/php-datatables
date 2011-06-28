@@ -144,7 +144,7 @@ class DataTable_DataSourceMysqli extends DataTable_DataSource{
 	
 	
 	public function setDbTablesToQuery(array $dbTables){
-		$this->_databaseTablesToQuery = $dbTables;
+		$this->_setDbTableNames($dbTables);
 	}
 	
 	public function addWhereClause($whereClause){
