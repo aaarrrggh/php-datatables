@@ -8,9 +8,10 @@ class DataTable_DataSourceMysqli extends DataTable_DataSource{
 	 
 	
 	
-	public function __construct(DataTable_Config $config, mysqli $dbConnection, array $dbTableNames){
+	public function __construct(DataTable_Config $config, $entityObjectName, mysqli $dbConnection, array $dbTableNames){
 		$this->_db = $dbConnection;
 		$this->_config = $config;
+		$this->_entityObjectName = $entityObjectName;
 		
 		$this->setDbTableNames($dbTableNames);
 		
@@ -49,7 +50,7 @@ class DataTable_DataSourceMysqli extends DataTable_DataSource{
 		$query = 'SELECT Count(id) as id FROM '.mysqli_real_escape_string($this->_db, implode(',', $this->_databaseTablesToQuery));
 
 		if (count($this->_whereClauseAdditions) > 0){
-			$query .= ' WHERE '.implode('AND ', $this->_whereClauseAdditions);
+			$query .= ' WHERE '.implode(' AND ', $this->_whereClauseAdditions);
 		}
 	
 		$dat = $this->_db->query($query);
@@ -64,7 +65,7 @@ class DataTable_DataSourceMysqli extends DataTable_DataSource{
 	
 		$entities = array();
 		while ($row = $dat->fetch_assoc()){
-			$entities[] = DataTable_DataEntityFactory::create('User', $row);
+			$entities[] = DataTable_DataEntityFactory::create($this->_entityObjectName, $row);
 		}
 		
 		return $entities;
@@ -91,11 +92,29 @@ class DataTable_DataSourceMysqli extends DataTable_DataSource{
 				
 				$x++;
 			}
-			$whereClause .= implode('AND ', $this->_whereClauseAdditions);
+			
+			
+			foreach ($this->_whereClauseAdditions as $userWhereClause){
+				$whereClause .= ' AND '.$userWhereClause;
+			}
+			
+			
+			
 		}else{
 			
-			$whereClause .= 'WHERE ';
-			$whereClause .= implode('AND ', $this->_whereClauseAdditions);
+			$firstTimeInWhereLoop = true;
+			
+			foreach ($this->_whereClauseAdditions as $userWhereClause){
+					
+					if ($firstTimeInWhereLoop){
+						$whereClause .= ' WHERE '.$userWhereClause;
+						$firstTimeInWhereLoop = false;
+					}else{
+						$whereClause .= ' AND '.$userWhereClause;
+					}
+				
+					
+				}
 		}
 		
 		
@@ -118,6 +137,7 @@ class DataTable_DataSourceMysqli extends DataTable_DataSource{
 	
 		$query = 'SELECT * FROM '.mysqli_real_escape_string($this->_db, implode(',', $this->_databaseTablesToQuery)).' '.$whereClause.' '. $orderBy . '  LIMIT '.$request->getDisplayStart().', '.$request->getDisplayLength();	
 		
+		//echo $query;
 		return $query;
 	}
 

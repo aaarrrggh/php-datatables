@@ -22,7 +22,8 @@ class DbTestDataTable extends DataTable_DataTable{
             ->setGetMethod("getFirstName")
             ->setSortKey("first_name")
             ->setIsSortable(true)
-            ->setIsDefaultSort(false);
+            ->setIsDefaultSort(false)
+            ->setIsSearchable(true);
     
     $column3 = new DataTable_Column();
     $column3->setName("last_name")
@@ -69,7 +70,7 @@ class DbTestDataTable extends DataTable_DataTable{
            ->setIsServerSideEnabled(true);
          
     //create the data source
-    $dataSource = new DataSourceMysqliUsers($config, new mysqli('localhost', 'root', 'root', 'php-datatables'), 'users');
+    $dataSource = new DataSourceMysqliUsers($config, 'user', new mysqli('localhost', 'root', 'root', 'php-datatables'), array('users'));
     $config->setDataSource($dataSource);
     
      parent::__construct($config);

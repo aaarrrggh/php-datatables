@@ -34,7 +34,6 @@ include('DbTestDataTable.php');
 // instantiate the DataTable
 $table = new DbTestDataTable();
 
-
 // set the url to the ajax script
 $table->setAjaxDataUrl('ajax.php');
 

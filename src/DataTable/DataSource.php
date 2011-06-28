@@ -3,9 +3,11 @@
 abstract class DataTable_DataSource{
 
 	protected $_config;
+	protected $_entityObjectName;
 	
-	public function __construct(DataTable_Config $config){
+	public function __construct(DataTable_Config $config, $entityObjectName){
 		$this->_config = $config;
+		$this->_entityObjectName = $entityObjectName;
 	}
 	
 	/**
