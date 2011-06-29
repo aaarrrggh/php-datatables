@@ -3,7 +3,7 @@ include('User.php');
 include('../src/specific/DataSourceMysqliUsers.php');
 class DbTestDataTable extends DataTable_DataTable{
 	
-
+ 
 
 	public function __construct(DataTable_Config $config = null) {
 		

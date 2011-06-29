@@ -188,7 +188,7 @@ abstract class DataTable_DataTable
    
 			'iTotalRecords' => $result->getNumTotalResults(),
 			'iTotalDisplayRecords' => !is_null($result->getNumFilteredResults()) ? 
-                                          $result->getNumFilteredResults() : $result->getNumTotalResults(),
+                                         $result->getNumFilteredResults() : $result->getNumTotalResults(),
 			'aaData' => $rows,
 			'sEcho' => $this->request->getEcho(),		
     );

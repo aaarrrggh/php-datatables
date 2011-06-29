@@ -82,7 +82,14 @@ class DataTable_DataSourceMysqli extends DataTable_DataSource{
 			
 			
 			$x = 0;
+			$numberSearchItems = count ($this->getSearchableColumnNames());
+			
 			foreach ($this->getSearchableColumnNames() as $columnName){
+				
+				if ($x==0){
+					//first time in where loop for search term
+					$whereClause .= '(';
+				}
 				
 				if ($x>0){
 					$whereClause .= ' OR ';
@@ -91,6 +98,10 @@ class DataTable_DataSourceMysqli extends DataTable_DataSource{
 				$whereClause .= $columnName .' LIKE "%'. mysqli_real_escape_string($this->_db, $request->getSearch()) .'%"';
 				
 				$x++;
+				
+				if ($x == $numberSearchItems){
+					$whereClause .= ')';
+				}
 			}
 			
 			
