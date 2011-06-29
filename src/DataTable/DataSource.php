@@ -29,21 +29,14 @@ abstract class DataTable_DataSource{
 	 * 
 	 * Returns the number of results after a search
 	 * 
-	 * Expects to receive an array of DataTable_DataEntity objects
-	 * @throws DataTable_DataTableException
 	 */
-	protected function getTotalNumberOfFilteredResults(DataTable_Request $request, array $entities){
+	protected function getTotalNumberOfFilteredResults(DataTable_Request $request){
 		
 		if (!$request->getSearch()){
 			return null;
 		}
 		
-		foreach ($entities as $entity){
-			if (!$entity instanceof DataTable_DataEntity){
-				throw new DataTable_DataTableException('Not an entity type!');
-			}
-		}	
-		return count($entities);
+		
 	}
 	
 	/**

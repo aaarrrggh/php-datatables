@@ -39,7 +39,7 @@ class DataTable_DataSourceMysqli extends DataTable_DataSource{
 
 	$results = $this->getEntities($request);
 
-    return new DataTable_DataResult($results, $this->getTotalNumberOfRecordsInDataSet(), $this->getTotalNumberOfFilteredResults($request, $results)); //the pagination requires filtered
+    return new DataTable_DataResult($results, $this->getTotalNumberOfRecordsInDataSet(), $this->getTotalNumberOfFilteredResults($request)); //the pagination requires filtered
 		
 		
 	}
@@ -152,7 +152,21 @@ class DataTable_DataSourceMysqli extends DataTable_DataSource{
 		return $query;
 	}
 
-	
+	public function getTotalNumberOfFilteredResults(DataTable_Request $request){
+		
+		parent::getTotalNumberOfFilteredResults($request);
+		
+		$whereClause = $this->_getSearchElementOfSqlQuery($request);
+		$query = 'SELECT count(*) count FROM '.mysqli_real_escape_string($this->_db, implode(',', $this->_databaseTablesToQuery)).' '.$whereClause. ';';
+
+		$dat = $this->_db->query($query);
+		$result = '';
+		
+		while ($row = $dat->fetch_assoc()){
+			return $row['count'];
+		}
+				
+	}
 	
 	public function setDbTablesToQuery(array $dbTables){
 		$this->_setDbTableNames($dbTables);
